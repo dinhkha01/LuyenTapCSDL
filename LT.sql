@@ -149,25 +149,13 @@ ORDER BY price DESC
 
 
 -- 7.3 Tìm những khách hàng có mức chi tiêu cao nhất. Thông tin gồm : mã khách hàng, tên khách hàng và tổng chi tiêu .(Nếu các khách hàng có cùng mức chi tiêu thì lấy hết)
-WITH CustomerSpending AS (
-    SELECT 
-        c.customer_id, 
-        c.customer_name, 
-        SUM(o.total_amount) AS tong_chi_tieu
-    FROM customers c
-    JOIN orders o ON c.customer_id = o.customer_id
-    GROUP BY c.customer_id, c.customer_name
-),
-MaxSpending AS (
-    SELECT MAX(tong_chi_tieu) AS max_spending
-    FROM CustomerSpending
-)
-SELECT 
-    cs.customer_id, 
-    cs.customer_name, 
-    cs.tong_chi_tieu
-FROM CustomerSpending cs, MaxSpending ms
-WHERE cs.tong_chi_tieu = ms.max_spending;
+
+SELECT customers.customer_id, customers.customer_name, SUM(orders.total_amount) AS tong_chi_tieu
+FROM customers
+JOIN orders ON customers.customer_id = orders.customer_id
+GROUP BY customers.customer_id, customers.customer_name
+ORDER BY tong_chi_tieu DESC
+
 
 -- Câu 8 - Tạo view
 -- 8.1 Tạo view có tên view_order_list hiển thị thông tin đơn hàng gồm : mã đơn hàng, tên khách hàng, tên nhân viên, tổng tiền và ngày đặt. Các bản ghi sắp xếp theo thứ tự ngày đặt mới nhất
